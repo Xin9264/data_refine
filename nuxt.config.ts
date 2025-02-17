@@ -17,5 +17,27 @@ export default defineNuxtConfig({
         }
       }
     }
+  },
+
+  // 模块
+  modules: [
+    '@nuxt/devtools'
+  ],
+
+  // 应用配置
+  app: {
+    head: {
+      title: '视频分析系统',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+      ],
+      link: [
+        { 
+          rel: 'stylesheet', 
+          href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'
+        }
+      ]
+    }
   }
 })
