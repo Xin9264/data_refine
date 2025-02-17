@@ -49,12 +49,20 @@
                 <i class="fas fa-clock"></i>
                 {{ formatDate(item.timestamp) }}
               </span>
-              <button @click="downloadResult(item)" 
-                      class="download-btn"
-                      :disabled="item.status === 'running'">
-                <i class="fas fa-download"></i>
-                {{ item.status === 'running' ? '处理中...' : '下载结果' }}
-              </button>
+              <div class="download-buttons">
+                <button @click="downloadResult(item)" 
+                        class="download-btn"
+                        :disabled="item.status === 'running'">
+                  <i class="fas fa-download"></i>
+                  {{ item.status === 'running' ? '处理中...' : '下载结果' }}
+                </button>
+                <button @click="downloadZipFile(item)"
+                        class="download-btn zip-btn"
+                        :disabled="item.status === 'running'">
+                  <i class="fas fa-file-archive"></i>
+                  {{ item.status === 'running' ? '处理中...' : '下载图标' }}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -152,6 +160,36 @@ async function downloadResult(item) {
   } catch (error) {
     console.error('Download error:', error)
     alert('下载失败：' + error.message)
+  }
+}
+
+async function downloadZipFile(item) {
+  try {
+    const res = await fetch('/api/get_zip_file', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user_id: item.user_id,
+        trace_id: item.trace_id
+      })
+    })
+    
+    if (!res.ok) throw new Error('Failed to get zip file')
+    
+    const blob = await res.blob()
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${item.user_id}_${item.trace_id}.zip`
+    document.body.appendChild(a)
+    a.click()
+    window.URL.revokeObjectURL(url)
+    document.body.removeChild(a)
+  } catch (error) {
+    console.error('Download zip error:', error)
+    alert('下载 ZIP 文件失败：' + error.message)
   }
 }
 
@@ -318,6 +356,11 @@ onUnmounted(() => {
   gap: 5px;
 }
 
+.download-buttons {
+  display: flex;
+  gap: 8px;
+}
+
 .download-btn {
   background: #1890ff;
   color: white;
@@ -340,6 +383,14 @@ onUnmounted(() => {
   background: #bfbfbf;
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+.zip-btn {
+  background: #722ed1;
+}
+
+.zip-btn:hover:not(:disabled) {
+  background: #9254de;
 }
 
 /* 进度条样式 */

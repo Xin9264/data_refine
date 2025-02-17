@@ -2,7 +2,7 @@
   <div class="dashboard-content">
     <div class="header">
       <h1>GUI活动视频分析系统</h1>
-      <p class="subtitle">Have a nice day</p>
+      <!-- <p class="subtitle">Have a nice day</p> -->
     </div>
 
     <div class="card-container">
@@ -50,6 +50,9 @@
           <button @click="downloadResult" class="download-btn">
             <i class="fas fa-download"></i> 下载分析结果
           </button>
+          <button @click="downloadZipFile" class="download-btn zip-btn">
+            <i class="fas fa-file-archive"></i> 下载图标文件
+          </button>
         </div>
       </div>
     </div>
@@ -77,6 +80,7 @@ const {
   updateVideoUrl,
   checkProgress,
   downloadResult,
+  downloadZipFile,
   submitForm
 } = taskState
 
@@ -264,5 +268,22 @@ pre {
   font-size: 14px;
   overflow-x: auto;
   margin: 0;
+}
+
+.result-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.download-btn {
+  flex: 1;
+}
+
+.zip-btn {
+  background: #722ed1;
+}
+
+.zip-btn:hover {
+  background: #9254de;
 }
 </style> 

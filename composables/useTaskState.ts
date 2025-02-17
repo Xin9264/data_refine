@@ -89,6 +89,36 @@ export function useTaskState() {
     }
   }
 
+  async function downloadZipFile() {
+    try {
+      const res = await fetch('/api/get_zip_file', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user_id: formData.value.user_id,
+          trace_id: formData.value.trace_id
+        })
+      })
+      
+      if (!res.ok) throw new Error('Failed to get zip file')
+      
+      const blob = await res.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${formData.value.user_id}_${formData.value.trace_id}.zip`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (error) {
+      console.error('Download zip error:', error)
+      alert('下载 ZIP 文件失败：' + error.message)
+    }
+  }
+
   async function submitForm() {
     isLoading.value = true
     isError.value = false
@@ -134,6 +164,7 @@ export function useTaskState() {
     updateVideoUrl,
     checkProgress,
     downloadResult,
+    downloadZipFile,
     submitForm
   }
 } 
